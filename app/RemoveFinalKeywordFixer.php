@@ -11,7 +11,6 @@ use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
-use PhpCsFixer\Tokenizer\TokensAnalyzer;
 use SplFileInfo;
 
 class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixerInterface
@@ -43,7 +42,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
      */
     public function isCandidate(Tokens $tokens): bool
     {
-        return $tokens->isTokenKindFound(T_FINAL);
+        return $tokens->isAnyTokenKindsFound([T_FINAL]);
     }
 
     /**
@@ -59,9 +58,11 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             $tokens->clearAt($index);
             $tokens->clearAt(++$index);
 
-            if ($this->configuration['mark_internal']) {
-                $this->markAsInternal($tokens, $index);
+            if (! $this->configuration['mark_internal']) {
+                continue;
             }
+
+            $this->markAsInternal($tokens, $index);
         }
     }
 
@@ -70,40 +71,65 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
      */
     protected function markAsInternal(Tokens $tokens, int $index): void
     {
-        $docToken = $tokens->getPrevTokenOfKind($index, [[T_DOC_COMMENT]]);
+        $spaces = $this->getIndentSpacing($tokens, $index);
 
-        if ($docToken) {
-            $docblock = $tokens[$docToken];
+        $docBlock = $tokens[$docIndex = $tokens->getPrevNonWhitespace($index)];
 
-            // Modify the doc block as needed
+        // Modify the current docblock and add @internal to it.
+        if ($docBlock->isGivenKind(T_DOC_COMMENT)) {
+            $docblock = $tokens[$docIndex];
+
             $originalDocBlock = $docblock->getContent();
 
-            $modifiedDocBlock = $this->addInternalAnnotation($originalDocBlock);
+            $modifiedDocBlock = $this->addInternalAnnotation($originalDocBlock, $spaces);
 
             if ($originalDocBlock !== $modifiedDocBlock) {
-                $tokens[$docToken] = new Token([T_DOC_COMMENT, $modifiedDocBlock]);
+                $tokens[$docIndex] = new Token([T_DOC_COMMENT, $modifiedDocBlock]);
             }
-        } else {
-            $tokens->insertAt(--$index, new Token([
-                T_DOC_COMMENT,
-                "/**\n * @internal\n */"
-            ]));
 
-            $tokens->insertAt(++$index, new Token([T_WHITESPACE, "\n"]));
+            return;
         }
+
+        // Insert a new doc block and add @internal to it.
+        $tokens->insertAt(--$index, new Token([
+            T_DOC_COMMENT,
+            "/**\n $spaces* @internal\n$spaces */"
+        ]));
+
+        $tokens->insertAt(++$index, new Token([T_WHITESPACE, "\n".$spaces]));
+    }
+
+    /**
+     * Get the indent spacing for the construct.
+     */
+    protected function getIndentSpacing(Tokens $tokens, int $index): string
+    {
+        $previousWhitespaceIndex = $tokens->getPrevTokenOfKind($index, [[T_WHITESPACE]]);
+
+        $previousWhitespaceContent = $tokens[$previousWhitespaceIndex]->getContent();
+
+        $lastLineBreakPos = strrpos($previousWhitespaceContent, "\n");
+
+        // Extract the substring after the last line break.
+        $substring = substr($previousWhitespaceContent, $lastLineBreakPos + 1);
+
+        // Use a regular expression to match spaces
+        preg_match_all('/\s/', $substring, $matches);
+
+        return implode($matches[0] ?? []);
     }
 
     /**
      * Add an "@internal" annotation to the doc block.
      */
-    protected function addInternalAnnotation(string $docBlock): string
+    protected function addInternalAnnotation(string $docBlock, string $spaces): string
     {
         if (str_contains($docBlock, '@internal')) {
             return $docBlock;
         }
 
-        // Add @internal before the closing "*/"
-        return preg_replace('/\s*\*\/\s*$/', "\n * @internal\n */", $docBlock);
+        // Add @internal before the closing "*/".
+        return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @internal\n$spaces */", $docBlock);
     }
 
     /**
@@ -136,7 +162,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     protected function createConfigurationDefinition(): FixerConfigurationResolverInterface
     {
         return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('mark_internal', 'Mark final classes as internal.'))
+            (new FixerOptionBuilder('mark_internal', 'Mark final classes and methods as internal.'))
                 ->setAllowedValues([true, false])
                 ->setDefault(false)
                 ->getOption(),
