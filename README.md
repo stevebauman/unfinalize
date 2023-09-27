@@ -1,8 +1,8 @@
 # Unfinalize
 
-Unleash the freedom lost with open source packages marking classes and methods as final.
+Unleash the freedom lost with open source PHP packages marking classes and methods as final.
 
-Unfinalize permanently removes final keywords from composer vendor packages on `composer update` using PHP CS Fixer.
+Unfinalize permanently removes `final` keywords from composer vendor packages on `composer update` using PHP CS Fixer.
 
 ## Installation
 
