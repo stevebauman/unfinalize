@@ -9,9 +9,6 @@
         "issues": "https://github.com/laravel-zero/laravel-zero/issues",
         "source": "https://github.com/laravel-zero/laravel-zero"
     },
-    "unfinalize": [
-        "abc"
-    ],
     "authors": [
         {
             "name": "Nuno Maduro",
@@ -27,7 +24,8 @@
         "friendsofphp/php-cs-fixer": "^3.16",
         "laravel/pint": "^1.8",
         "mockery/mockery": "^1.5.1",
-        "pestphp/pest": "^2.5"
+        "pestphp/pest": "^2.5",
+        "spatie/ray": "^1.39"
     },
     "autoload": {
         "psr-4": {
