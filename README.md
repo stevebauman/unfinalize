@@ -23,7 +23,7 @@ Unleash the freedom lost with open source PHP packages marking classes and metho
 
 ---
 
-Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from classes and methods from composer vendor packages on `composer update`:
+Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from composer vendor packages:
 
 ```diff
 - final class Foo
