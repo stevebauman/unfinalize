@@ -34,7 +34,6 @@ class Run extends Command
 
         $composerFilePath = $dir . DIRECTORY_SEPARATOR . 'composer.json';
 
-
         if (! file_exists($composerFilePath)) {
             $this->error("composer.json is not present in directory [$dir].");
 
