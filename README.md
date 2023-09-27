@@ -65,7 +65,7 @@ Add the unfinalize command to your `composer.json` so it runs on `composer updat
 {
   "scripts": {
     "post-update-cmd": [
-      "@php artisan unfinalize:run"
+      "@php vendor/bin/unfinalize run"
     ]
   }
 }
@@ -83,7 +83,7 @@ If you would like final classes and methods to be marked with a `@final` doc blo
 {
   "scripts": {
     "post-update-cmd": [
-      "@php artisan unfinalize:run --mark-final"
+      "@php vendor/bin/unfinalize run --mark-final"
     ]
   }
 }
