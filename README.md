@@ -2,7 +2,19 @@
 
 Unleash the freedom lost with open source PHP packages marking classes and methods as final.
 
-Unfinalize permanently removes `final` keywords from composer vendor packages on `composer update` using PHP CS Fixer.
+Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from classes and methods from composer vendor packages on `composer update`:
+
+```diff
+- final class Foo
++ class Foo
+{
+-   final public function bar()
++   public function bar()
+    {
+        // ...
+    }
+}
+```
 
 ## Installation
 
@@ -35,3 +47,55 @@ Add the unfinalize command to your `composer.json` so it runs on `composer updat
 ```
 
 Then, run `composer update`.
+
+### Options
+
+#### `--mark-final`
+
+If you would like final classes and methods to be marked with a `@final` doc block, you may add the `--mark-final` option to the unfinalize command:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php artisan unfinalize:run --mark-final"
+    ]
+  }
+}
+```
+
+Which will produce:
+
+**Before**:
+
+```php
+final class Foo
+{
+    final public function bar()
+    {
+        // ...
+    }
+}
+```
+
+**After**:
+
+```php
+/**
+ * @final
+ */
+class Foo
+{
+    /**
+     * @final
+     */
+    public function bar()
+    {
+        // ...
+    }
+}
+```
+
+#### `--dry`
+
+Execute a dry run to see what files will be modified by PHP CS Fixer.
