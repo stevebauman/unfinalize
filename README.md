@@ -10,15 +10,15 @@ Unleash the freedom lost with open source PHP packages marking classes and metho
 </a>
 
 <a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/v/stevebauman/purify.svg?style=flat-square"/>
+<img src="https://img.shields.io/packagist/v/stevebauman/unfinalize.svg?style=flat-square"/>
 </a>
 
 <a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/dt/stevebauman/purify.svg?style=flat-square"/>
+<img src="https://img.shields.io/packagist/dt/stevebauman/unfinalize.svg?style=flat-square"/>
 </a>
 
 <a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/l/stevebauman/purify.svg?style=flat-square"/>
+<img src="https://img.shields.io/packagist/l/stevebauman/unfinalize.svg?style=flat-square"/>
 </a>
 
 ---
