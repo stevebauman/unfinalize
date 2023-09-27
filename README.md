@@ -1,7 +1,7 @@
 <h1 align="center">Unfinalize</h1>
 
 <p align="center">
-Unleash the freedom lost with open source PHP packages marking classes and methods as final.
+Unleash the freedom lost with open source PHP packages marking classes and methods as <code>final</code>.
 </p>
 
 <p align="center">
