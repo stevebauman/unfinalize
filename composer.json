@@ -1,18 +1,17 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "name": "stevebauman/unfinalize",
+    "description": "Permanently remove final keywords from vendor packages.",
+    "keywords": ["final", "unfinalize", "php-cs-fixer", "fixer"],
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "issues": "https://github.com/stevebauman/unfinalize/issues",
+        "source": "https://github.com/stevebauman/unfinalize"
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Steve Bauman",
+            "email": "steven_bauman@outlook.com"
         }
     ],
     "require": {
