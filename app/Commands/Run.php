@@ -59,7 +59,7 @@ class Run extends Command
         $tempConfigFile = $this->makeTempConfigFile($dir, $packages);
 
         try {
-            // Run the PHP-CS-Fixer command
+            // Run the PHP-CS-Fixer command.
             $application = new Application();
 
             $application->setAutoExit(false);
@@ -70,7 +70,7 @@ class Run extends Command
                 '--dry-run' => $this->option('dry'),
             ]), $output = new BufferedOutput());
 
-            // Display the output
+            // Display the output.
             echo $output->fetch();
         } catch (Exception) {
             unlink($tempConfigFile);
