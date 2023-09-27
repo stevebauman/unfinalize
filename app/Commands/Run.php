@@ -112,7 +112,7 @@ class Run extends Command
     /**
      * Write a string as standard output.
      */
-    public function line($string, $style = null, $verbosity = null)
+    public function line($string, $style = null, $verbosity = null): void
     {
         parent::line("[Unfinalize] - ".$string, $style, $verbosity);
     }
