@@ -37,9 +37,9 @@ Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from compose
 }
 ```
 
-Updates to PHP files are done safely, quickly, and performant. 
-
-Changes are also stored permanently, meaning there is no performance impact using Unfinalize.
+- Updates to PHP files are done safely, quickly, and performant.
+- Changes are stored permanently. There is no performance impact using Unfinalize.
+- No additional dependencies to your application. Unfinalize and its dependencies are [compiled into a single phar file](https://github.com/stevebauman/unfinalize/blob/master/builds).
 
 ## Installation
 
