@@ -16,7 +16,7 @@ class Run extends Command
      *
      * @var string
      */
-    protected $signature = 'run {--dry} {--mark-internal}';
+    protected $signature = 'run {--dry} {--mark-final}';
 
     /**
      * The description of the command.
@@ -95,9 +95,9 @@ class Run extends Command
                 ->setFinder($finder)
                 ->setUsingCache(false)
                 ->setRiskyAllowed(true)
-                ->setRules(['Unfinalize/remove_final_keyword' => ['mark_internal' => %s]])
+                ->setRules(['Unfinalize/remove_final_keyword' => ['mark_final' => %s]])
                 ->registerCustomFixers([new \App\RemoveFinalKeywordFixer()]);
-        PHP, implode(',', $dirs), var_export($this->option('mark-internal'), true));
+        PHP, implode(',', $dirs), var_export($this->option('mark-final'), true));
 
         // Save the configuration to a temporary file.
         $tempConfigFile = tempnam(sys_get_temp_dir(), 'php_cs_fixer_');

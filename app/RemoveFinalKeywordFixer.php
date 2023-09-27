@@ -58,30 +58,30 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             $tokens->clearAt($index);
             $tokens->clearAt(++$index);
 
-            if (! $this->configuration['mark_internal']) {
+            if (! $this->configuration['mark_final']) {
                 continue;
             }
 
-            $this->markAsInternal($tokens, $index);
+            $this->markAsFinal($tokens, $index);
         }
     }
 
     /**
-     * Mark the construct as internal.
+     * Mark the construct as final.
      */
-    protected function markAsInternal(Tokens $tokens, int $index): void
+    protected function markAsFinal(Tokens $tokens, int $index): void
     {
         $spaces = $this->getIndentSpacing($tokens, $index);
 
         $docBlock = $tokens[$docIndex = $tokens->getPrevNonWhitespace($index)];
 
-        // Modify the current docblock and add @internal to it.
+        // Modify the current docblock and add @final to it.
         if ($docBlock->isGivenKind(T_DOC_COMMENT)) {
             $docblock = $tokens[$docIndex];
 
             $originalDocBlock = $docblock->getContent();
 
-            $modifiedDocBlock = $this->addInternalAnnotation($originalDocBlock, $spaces);
+            $modifiedDocBlock = $this->addFinalAnnotation($originalDocBlock, $spaces);
 
             if ($originalDocBlock !== $modifiedDocBlock) {
                 $tokens[$docIndex] = new Token([T_DOC_COMMENT, $modifiedDocBlock]);
@@ -90,10 +90,10 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             return;
         }
 
-        // Insert a new doc block and add @internal to it.
+        // Insert a new doc block and add @funal to it.
         $tokens->insertAt(--$index, new Token([
             T_DOC_COMMENT,
-            "/**\n $spaces* @internal\n$spaces */"
+            "/**\n $spaces* @final\n$spaces */"
         ]));
 
         $tokens->insertAt(++$index, new Token([T_WHITESPACE, "\n".$spaces]));
@@ -106,7 +106,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     {
         $previousWhitespaceIndex = $tokens->getPrevTokenOfKind($index, [[T_WHITESPACE]]);
 
-        $previousWhitespaceContent = $tokens[$previousWhitespaceIndex]->getContent();
+        $previousWhitespaceContent = $previousWhitespaceIndex ? $tokens[$previousWhitespaceIndex]->getContent() : '';
 
         $lastLineBreakPos = strrpos($previousWhitespaceContent, "\n");
 
@@ -120,16 +120,16 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     }
 
     /**
-     * Add an "@internal" annotation to the doc block.
+     * Add an "@final" annotation to the doc block.
      */
-    protected function addInternalAnnotation(string $docBlock, string $spaces): string
+    protected function addFinalAnnotation(string $docBlock, string $spaces): string
     {
-        if (str_contains($docBlock, '@internal')) {
+        if (str_contains($docBlock, '@final')) {
             return $docBlock;
         }
 
-        // Add @internal before the closing "*/".
-        return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @internal\n$spaces */", $docBlock);
+        // Add @final before the closing "*/".
+        return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @final\n$spaces */", $docBlock);
     }
 
     /**
@@ -162,7 +162,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     protected function createConfigurationDefinition(): FixerConfigurationResolverInterface
     {
         return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('mark_internal', 'Mark final classes and methods as internal.'))
+            (new FixerOptionBuilder('mark_final', 'Mark final classes and methods as final as a doc block.'))
                 ->setAllowedValues([true, false])
                 ->setDefault(false)
                 ->getOption(),
