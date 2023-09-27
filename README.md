@@ -9,6 +9,18 @@ Unleash the freedom lost with open source PHP packages marking classes and metho
 <img src="https://img.shields.io/github/actions/workflow/status/stevebauman/unfinalize/run-tests.yml?branch=master&style=flat-square"/>
 </a>
 
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
+<img src="https://img.shields.io/packagist/v/stevebauman/purify.svg?style=flat-square"/>
+</a>
+
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
+<img src="https://img.shields.io/packagist/dt/stevebauman/purify.svg?style=flat-square"/>
+</a>
+
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
+<img src="https://img.shields.io/packagist/l/stevebauman/purify.svg?style=flat-square"/>
+</a>
+
 ---
 
 Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from classes and methods from composer vendor packages on `composer update`:
