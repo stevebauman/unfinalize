@@ -1,6 +1,8 @@
 # Unfinalize
 
-Permanently remove final keywords from composer vendor packages.
+Unleash the freedom lost with open source packages marking classes and methods as final.
+
+Unfinalize permanently removes final keywords from composer vendor packages on `composer update` using PHP CS Fixer.
 
 ## Installation
 
@@ -24,7 +26,6 @@ Add the unfinalize command to your `composer.json` so it runs on `composer updat
 
 ```json
 {
-  // ...
   "scripts": {
     "post-update-cmd": [
       "@php artisan unfinalize:run"
