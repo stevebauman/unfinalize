@@ -16,7 +16,7 @@ class Run extends Command
      *
      * @var string
      */
-    protected $signature = 'run {--dry} {--mark-final}';
+    protected $signature = 'run {--dry} {--mark-final} {--dir=}';
 
     /**
      * The description of the command.
@@ -30,7 +30,10 @@ class Run extends Command
      */
     public function handle(): int
     {
-        $composerFilePath = ($dir = getcwd()) . DIRECTORY_SEPARATOR . 'composer.json';
+        $dir = $this->option('dir') ?? getcwd();
+
+        $composerFilePath = $dir . DIRECTORY_SEPARATOR . 'composer.json';
+
 
         if (! file_exists($composerFilePath)) {
             $this->error("composer.json is not present in directory [$dir].");
