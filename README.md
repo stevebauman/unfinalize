@@ -16,6 +16,10 @@ Unfinalize uses PHP CS Fixer to permanently remove `final` keywords from classes
 }
 ```
 
+Updates to PHP files are done safely, quickly, and performant. 
+
+Changes are also stored permanently, meaning there is no performance impact using Unfinalize.
+
 ## Installation
 
 ```bash
