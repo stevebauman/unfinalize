@@ -9,7 +9,7 @@ use PhpCsFixer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class Run extends Command
+final class Run extends Command
 {
     /**
      * The signature of the command.
