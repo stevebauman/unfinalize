@@ -90,7 +90,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             return;
         }
 
-        // Insert a new doc block and add @funal to it.
+        // Insert a new doc block and add @final to it.
         $tokens->insertAt(--$index, new Token([
             T_DOC_COMMENT,
             "/**\n $spaces* @final\n$spaces */"
