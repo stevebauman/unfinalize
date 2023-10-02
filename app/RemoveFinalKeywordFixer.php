@@ -113,7 +113,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
         // Extract the substring after the last line break.
         $substring = substr($previousWhitespaceContent, $lastLineBreakPos + 1);
 
-        // Use a regular expression to match spaces
+        // Use a regular expression to match spaces.
         preg_match_all('/\s/', $substring, $matches);
 
         return implode($matches[0] ?? []);
