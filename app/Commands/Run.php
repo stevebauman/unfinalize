@@ -2,12 +2,18 @@
 
 namespace App\Commands;
 
-use Exception;
-use Illuminate\Support\Str;
+use App\NodeVisitor\RemoveFinalKeywordVisitor;
 use LaravelZero\Framework\Commands\Command;
-use PhpCsFixer\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
+use PhpParser\Lexer\Emulative;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\CloningVisitor;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+use SplFileInfo;
 
 class Run extends Command
 {
@@ -16,7 +22,7 @@ class Run extends Command
      *
      * @var string
      */
-    protected $signature = 'run {--dry} {--mark-final} {--dir=}';
+    protected $signature = 'run {--dry} {--mark-final} {--mark-readonly} {--dir=}';
 
     /**
      * The description of the command.
@@ -56,57 +62,89 @@ class Run extends Command
             return static::SUCCESS;
         }
 
-        $tempConfigFile = $this->makeTempConfigFile($dir, $packages);
+        $this->info('Unfinalizing the following packages: ' . implode(', ', $packages));
 
-        try {
-            // Run the PHP-CS-Fixer command.
-            $application = new Application();
 
-            $application->setAutoExit(false);
+        $lexer = new Emulative([
+            'usedAttributes' => [
+                'comments', 'startLine', 'endLine', 'startTokenPos', 'endTokenPos',
+            ],
+        ]);
 
-            $application->run(new ArrayInput([
-                'command' => 'fix',
-                '--config' => $tempConfigFile,
-                '--dry-run' => $this->option('dry'),
-            ]), $output = new BufferedOutput());
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7, $lexer);
 
-            // Display the output.
-            echo $output->fetch();
-        } catch (Exception) {
-            unlink($tempConfigFile);
+        $prettyPrinter = new Standard();
+
+        $nodeTraverser = new NodeTraverser();
+
+        $nodeTraverser->addVisitor(new NameResolver());
+        $nodeTraverser->addVisitor(new CloningVisitor());
+        $nodeTraverser->addVisitor(new RemoveFinalKeywordVisitor(
+            $this->option('mark-final') ?? false,
+            $this->option('mark-readonly') ?? false
+        ));
+
+        foreach($packages as $package)
+        {
+            $packagePath = $dir . '/vendor/' . $package;
+            if (! file_exists($packagePath)) {
+                $this->error("Package [$package] does not exist in [$packagePath].");
+                return static::FAILURE;
+            }
+
+            $recursiveIteratorIterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($packagePath)
+            );
+
+            $modifiedFiles = [];
+            /** @var SplFileInfo $file */
+            foreach($recursiveIteratorIterator as $file){
+                if ($file->getExtension() !== 'php') {
+                    continue;
+                }
+
+                if (! $file->isFile()) {
+                    continue;
+                }
+
+                if ($file->isLink()) {
+                    continue;
+                }
+
+                $filePath = $file->getPathname();
+
+                $contents = file_get_contents($filePath);
+
+                if ($contents === false) {
+                    throw new RuntimeException('Unable to read file ['.$filePath.'].');
+                }
+
+                $stmts = $parser->parse($contents);
+
+                $code = $prettyPrinter->printFormatPreserving(
+                    $nodeTraverser->traverse($stmts),
+                    $stmts,
+                    $lexer->getTokens()
+                );
+
+                if ($code === $contents) {
+                    continue;
+                }
+
+                $result = file_put_contents($filePath, $code);
+                if ($result === false) {
+                    throw new RuntimeException('Unable to write file ['.$filePath.'].');
+                }
+
+                $modifiedFiles[] = $filePath;
+            }
+        }
+
+        foreach($modifiedFiles as $modifiedFile) {
+            $this->info("Modified [$modifiedFile].");
         }
 
         return static::SUCCESS;
-    }
-
-    /**
-     * Make a temporary PHP CS Fixer config file to launch with.
-     */
-    protected function makeTempConfigFile(string $dir, array $packages): string
-    {
-        $dirs = array_map(fn ($package) => (
-            Str::wrap(implode(DIRECTORY_SEPARATOR, [$dir, 'vendor', $package]), "'")
-        ), $packages);
-
-        $php = sprintf(<<<'PHP'
-            $finder = PhpCsFixer\Finder::create()
-                ->in([%s])
-                ->name('*.php');
-
-            return (new PhpCsFixer\Config)
-                ->setFinder($finder)
-                ->setUsingCache(false)
-                ->setRiskyAllowed(true)
-                ->setRules(['Unfinalize/remove_final_keyword' => ['mark_final' => %s]])
-                ->registerCustomFixers([new \App\RemoveFinalKeywordFixer()]);
-        PHP, implode(',', $dirs), var_export($this->option('mark-final'), true));
-
-        // Save the configuration to a temporary file.
-        $tempConfigFile = tempnam(sys_get_temp_dir(), 'php_cs_fixer_');
-
-        file_put_contents($tempConfigFile, '<?php  ' . $php);
-
-        return $tempConfigFile;
     }
 
     /**
