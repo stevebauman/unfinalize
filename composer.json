@@ -15,7 +15,8 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.1",
+        "nikic/php-parser": "^4.17"
     },
     "require-dev": {
         "laravel-zero/framework": "^10.0.2",
