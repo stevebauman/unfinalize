@@ -13,7 +13,7 @@ use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use SplFileInfo;
 
-class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixerInterface
+class RemoveFinalKeywordFixer extends AbstractFixer
 {
     /**
      * Get the name of the fixer.
