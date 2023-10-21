@@ -65,7 +65,6 @@ it('does not change private properties', function (string $before, string $after
     ],
 ]);
 
-
 it('fails changing to an unknown visibility', function () {
     $fixer = new ChangeMethodVisibilityFixer();
     $fixer->configure(['visibility' => 'invalid']);
