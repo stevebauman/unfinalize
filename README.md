@@ -126,7 +126,7 @@ class Foo
 
 #### `--properties={protected/public}`
 
-If you would like to change the visibility of private properties to 
+If you would like to change the visibility of `private` properties to 
 `protected` or `public`, you may add the `--properties` option to 
 the unfinalize command with the new visibility to assign:
 
@@ -162,7 +162,7 @@ class Foo
 
 #### `--methods={protected/public}`
 
-If you would like to change the visibility of private methods to 
+If you would like to change the visibility of `private` methods to 
 `protected` or `public`, you may add the `--properties` option 
 to the unfinalize command with the new visibility to assign:
 
