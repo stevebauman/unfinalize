@@ -75,15 +75,18 @@ Then, run `composer update`.
 
 ### Options
 
-#### `--mark-final`
+#### `--annotate={annotation}`
 
-If you would like final classes and methods to be marked with a `@final` doc block, you may add the `--mark-final` option to the unfinalize command:
+If you would like final classes and methods to be marked with an annotation (`@{annotation}`) doc
+block after unfinalizing, you may add the `--annotate` option to the unfinalize command:
+
+> If an annotation already exists in a doc block then it will be left untouched.
 
 ```json
 {
   "scripts": {
     "post-update-cmd": [
-      "@php vendor/bin/unfinalize run --mark-final"
+      "@php vendor/bin/unfinalize run --annotate=internal"
     ]
   }
 }
@@ -107,12 +110,12 @@ final class Foo
 
 ```php
 /**
- * @final
+ * @internal
  */
 class Foo
 {
     /**
-     * @final
+     * @internal
      */
     public function bar()
     {
@@ -121,6 +124,86 @@ class Foo
 }
 ```
 
+#### `--properties={protected/public}`
+
+If you would like to change the visibility of `private` properties to 
+`protected` or `public`, you may add the `--properties` option to 
+the unfinalize command with the new visibility to assign:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php vendor/bin/unfinalize run --properties=protected"
+    ]
+  }
+}
+```
+
+Which will produce:
+
+**Before**:
+
+```php
+class Foo
+{
+    private $bar;
+}
+```
+
+**After**:
+
+```php
+class Foo
+{
+    public $bar;
+}
+```
+
+#### `--methods={protected/public}`
+
+If you would like to change the visibility of `private` methods to 
+`protected` or `public`, you may add the `--properties` option 
+to the unfinalize command with the new visibility to assign:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php vendor/bin/unfinalize run --methods=public"
+    ]
+  }
+}
+```
+
+Which will produce:
+
+**Before**:
+
+```php
+class Foo
+{
+    private function bar()
+    {
+    }
+}
+```
+
+**After**:
+
+```php
+class Foo
+{
+    public function bar()
+    {
+    }
+}
+```
+
 #### `--dry`
 
-Execute a dry run to see what files will be modified by PHP CS Fixer.
+Execute a dry run to see what files will be modified by Unfinalize:
+
+```bash
+vendor/bin/unfinalize run --dry
+```

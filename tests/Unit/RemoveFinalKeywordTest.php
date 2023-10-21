@@ -75,9 +75,9 @@ it('removes the final keyword from function', function () {
     PHP);
 });
 
-it('marks as class final when configuration is set', function () {
+it('annotates as class final when annotation is set', function () {
     $fixer = new RemoveFinalKeywordFixer();
-    $fixer->configure(['mark_final' => true]);
+    $fixer->configure(['annotate' => 'final']);
     $tokens = Tokens::fromCode("<?php\nfinal class MyClass {}");
 
     $fixer->applyFix(new SplFileInfo('test.php'), $tokens);
@@ -91,9 +91,9 @@ it('marks as class final when configuration is set', function () {
     PHP);
 });
 
-it('marks as class final when configuration is set and multi-line doc block already exists', function () {
+it('annotates class as final when configuration is set and multi-line doc block already exists', function () {
     $fixer = new RemoveFinalKeywordFixer();
-    $fixer->configure(['mark_final' => true]);
+    $fixer->configure(['annotate' => 'final']);
     $tokens = Tokens::fromCode(<<<PHP
     <?php
     /**
@@ -114,9 +114,9 @@ it('marks as class final when configuration is set and multi-line doc block alre
     PHP);
 });
 
-it('marks as class final when configuration is set and single line doc block already exists', function () {
+it('annotates class as final when configuration is set and single line doc block already exists', function () {
     $fixer = new RemoveFinalKeywordFixer();
-    $fixer->configure(['mark_final' => true]);
+    $fixer->configure(['annotate' => 'final']);
     $tokens = Tokens::fromCode(<<<PHP
     <?php
     // Foo
@@ -135,9 +135,9 @@ it('marks as class final when configuration is set and single line doc block alr
     PHP);
 });
 
-it('marks as method final when configuration is set', function () {
+it('annotates method as final when configuration is set', function () {
     $fixer = new RemoveFinalKeywordFixer();
-    $fixer->configure(['mark_final' => true]);
+    $fixer->configure(['annotate' => 'final']);
     $tokens = Tokens::fromCode(<<<PHP
     <?php
     class MyClass {
@@ -189,6 +189,6 @@ it('has correct configuration definition', function () {
     $options = $configDefinition->getOptions();
 
     expect($options)->toHaveCount(1);
-    expect($options[0]->getName())->toBe('mark_final');
+    expect($options[0]->getName())->toBe('annotate');
 });
 
