@@ -75,15 +75,18 @@ Then, run `composer update`.
 
 ### Options
 
-#### `--mark-final`
+#### `--annotate={annotation}`
 
-If you would like final classes and methods to be marked with a `@final` doc block, you may add the `--mark-final` option to the unfinalize command:
+If you would like final classes and methods to be marked with an annotation (`@{annotation}`) doc
+block after unfinalizing, you may add the `--annotate` option to the unfinalize command:
+
+> If an annotation already exists in a doc block then it will be left untouched.
 
 ```json
 {
   "scripts": {
     "post-update-cmd": [
-      "@php vendor/bin/unfinalize run --mark-final"
+      "@php vendor/bin/unfinalize run --annotate=internal"
     ]
   }
 }
@@ -107,12 +110,12 @@ final class Foo
 
 ```php
 /**
- * @final
+ * @internal
  */
 class Foo
 {
     /**
-     * @final
+     * @internal
      */
     public function bar()
     {

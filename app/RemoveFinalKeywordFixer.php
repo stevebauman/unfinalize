@@ -58,18 +58,18 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             $tokens->clearAt($index);
             $tokens->clearAt(++$index);
 
-            if (! $this->configuration['mark_final']) {
+            if (! $this->configuration['annotate']) {
                 continue;
             }
 
-            $this->markAsFinal($tokens, $index);
+            $this->annotate($tokens, $index, $this->configuration['annotate']);
         }
     }
 
     /**
-     * Mark the construct as final.
+     * Annotate the construct with a doc block.
      */
-    protected function markAsFinal(Tokens $tokens, int $index): void
+    protected function annotate(Tokens $tokens, int $index, string $annotation): void
     {
         $spaces = $this->getIndentSpacing($tokens, $index);
 
@@ -81,7 +81,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
 
             $originalDocBlock = $docblock->getContent();
 
-            $modifiedDocBlock = $this->addFinalAnnotation($originalDocBlock, $spaces);
+            $modifiedDocBlock = $this->addAnnotation($originalDocBlock, $spaces, $annotation);
 
             if ($originalDocBlock !== $modifiedDocBlock) {
                 $tokens[$docIndex] = new Token([T_DOC_COMMENT, $modifiedDocBlock]);
@@ -93,7 +93,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
         // Insert a new doc block and add @final to it.
         $tokens->insertAt(--$index, new Token([
             T_DOC_COMMENT,
-            "/**\n $spaces* @final\n$spaces */"
+            "/**\n $spaces* @$annotation\n$spaces */"
         ]));
 
         $tokens->insertAt(++$index, new Token([T_WHITESPACE, "\n".$spaces]));
@@ -122,14 +122,14 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     /**
      * Add an "@final" annotation to the doc block.
      */
-    protected function addFinalAnnotation(string $docBlock, string $spaces): string
+    protected function addAnnotation(string $docBlock, string $spaces, string $annotation): string
     {
-        if (str_contains($docBlock, '@final')) {
+        if (str_contains($docBlock, "@$annotation")) {
             return $docBlock;
         }
 
         // Add @final before the closing "*/".
-        return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @final\n$spaces */", $docBlock);
+        return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @$annotation\n$spaces */", $docBlock);
     }
 
     /**
@@ -162,9 +162,8 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     protected function createConfigurationDefinition(): FixerConfigurationResolverInterface
     {
         return new FixerConfigurationResolver([
-            (new FixerOptionBuilder('mark_final', 'Mark final classes and methods as final as a doc block.'))
-                ->setAllowedValues([true, false])
-                ->setDefault(false)
+            (new FixerOptionBuilder('annotate', 'Annotate final classes and methods with a doc block.'))
+                ->setDefault(null)
                 ->getOption(),
         ]);
     }

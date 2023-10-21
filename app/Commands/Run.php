@@ -16,7 +16,7 @@ class Run extends Command
      *
      * @var string
      */
-    protected $signature = 'run {--dry} {--mark-final} {--dir=}';
+    protected $signature = 'run {--dry} {--annotate=} {--properties=} {--methods=} {--dir=}';
 
     /**
      * The description of the command.
@@ -64,7 +64,7 @@ class Run extends Command
 
             $application->setAutoExit(false);
 
-            $application->run(new ArrayInput([
+            $code = $application->run(new ArrayInput([
                 'command' => 'fix',
                 '--config' => $tempConfigFile,
                 '--dry-run' => $this->option('dry'),
@@ -76,7 +76,7 @@ class Run extends Command
             unlink($tempConfigFile);
         }
 
-        return static::SUCCESS;
+        return $code ?? static::FAILURE;
     }
 
     /**
@@ -84,22 +84,36 @@ class Run extends Command
      */
     protected function makeTempConfigFile(string $dir, array $packages): string
     {
+        $dir = Str::endsWith($dir, DIRECTORY_SEPARATOR)
+            ? Str::beforeLast($dir, DIRECTORY_SEPARATOR)
+            : $dir;
+
         $dirs = array_map(fn ($package) => (
-            Str::wrap(implode(DIRECTORY_SEPARATOR, [$dir, 'vendor', $package]), "'")
+            implode(DIRECTORY_SEPARATOR, [$dir, 'vendor', $package])
         ), $packages);
+
+        $rules = array_filter([
+            'Unfinalize/remove_final_keyword' => ['annotate' => $this->option('annotate')],
+            'Unfinalize/change_method_visibility' => array_filter(['visibility' => $this->option('methods')]),
+            'Unfinalize/change_property_visibility' => array_filter(['visibility' => $this->option('properties')]),
+        ]);
 
         $php = sprintf(<<<'PHP'
             $finder = PhpCsFixer\Finder::create()
-                ->in([%s])
+                ->in(%s)
                 ->name('*.php');
 
             return (new PhpCsFixer\Config)
+                ->setRules(%s)
                 ->setFinder($finder)
                 ->setUsingCache(false)
                 ->setRiskyAllowed(true)
-                ->setRules(['Unfinalize/remove_final_keyword' => ['mark_final' => %s]])
-                ->registerCustomFixers([new \App\RemoveFinalKeywordFixer()]);
-        PHP, implode(',', $dirs), var_export($this->option('mark-final'), true));
+                ->registerCustomFixers([
+                    new \App\RemoveFinalKeywordFixer(),
+                    new \App\ChangeMethodVisibilityFixer(),
+                    new \App\ChangePropertyVisibilityFixer(),
+                ]);
+        PHP, var_export($dirs, true), var_export($rules, true));
 
         // Save the configuration to a temporary file.
         $tempConfigFile = tempnam(sys_get_temp_dir(), 'php_cs_fixer_');
