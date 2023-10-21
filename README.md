@@ -124,6 +124,86 @@ class Foo
 }
 ```
 
+#### `--properties={protected/public}`
+
+If you would like to change the visibility of private properties to 
+`protected` or `public`, you may add the `--properties` option to 
+the unfinalize command with the new visibility to assign:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php vendor/bin/unfinalize run --properties=protected"
+    ]
+  }
+}
+```
+
+Which will produce:
+
+**Before**:
+
+```php
+class Foo
+{
+    private $bar;
+}
+```
+
+**After**:
+
+```php
+class Foo
+{
+    public $bar;
+}
+```
+
+#### `--methods={protected/public}`
+
+If you would like to change the visibility of private methods to 
+`protected` or `public`, you may add the `--properties` option 
+to the unfinalize command with the new visibility to assign:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php vendor/bin/unfinalize run --methods=public"
+    ]
+  }
+}
+```
+
+Which will produce:
+
+**Before**:
+
+```php
+class Foo
+{
+    private function bar()
+    {
+    }
+}
+```
+
+**After**:
+
+```php
+class Foo
+{
+    public function bar()
+    {
+    }
+}
+```
+
 #### `--dry`
 
-Execute a dry run to see what files will be modified by PHP CS Fixer.
+Execute a dry run to see what files will be modified by Unfinalize:
+
+```bash
+vendor/bin/unfinalize run --dry
+```

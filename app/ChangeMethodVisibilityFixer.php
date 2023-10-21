@@ -29,9 +29,7 @@ class ChangeMethodVisibilityFixer extends AbstractFixer implements ConfigurableF
     {
         return new FixerDefinition(
             'Changes the visibility of private methods.',
-            [
-                new CodeSample("<?php class Sample { private function example() {} }\n"),
-            ]
+            [new CodeSample("<?php class Sample { private function example() {} }\n")]
         );
     }
 

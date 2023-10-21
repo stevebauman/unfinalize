@@ -29,9 +29,7 @@ class ChangePropertyVisibilityFixer extends AbstractFixer implements Configurabl
     {
         return new FixerDefinition(
             'Changes the visibility of private properties.',
-            [
-                new CodeSample("<?php class Sample { private \$example; }\n"),
-            ]
+            [new CodeSample("<?php class Sample { private \$example; }\n")]
         );
     }
 
