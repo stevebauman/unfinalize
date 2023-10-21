@@ -156,7 +156,7 @@ class Foo
 ```php
 class Foo
 {
-    public $bar;
+    protected $bar;
 }
 ```
 
