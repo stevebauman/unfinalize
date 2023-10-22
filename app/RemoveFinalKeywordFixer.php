@@ -75,7 +75,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
 
         $docBlock = $tokens[$docIndex = $tokens->getPrevNonWhitespace($index)];
 
-        // Modify the current docblock and add @final to it.
+        // Modify the current docblock and add the annotation to it.
         if ($docBlock->isGivenKind(T_DOC_COMMENT)) {
             $docblock = $tokens[$docIndex];
 
@@ -90,7 +90,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             return;
         }
 
-        // Insert a new doc block and add @final to it.
+        // Insert a new doc block and add the annotation to it.
         $tokens->insertAt(--$index, new Token([
             T_DOC_COMMENT,
             "/**\n $spaces* @$annotation\n$spaces */"
@@ -120,7 +120,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
     }
 
     /**
-     * Add an "@final" annotation to the doc block.
+     * Add the annotation to the doc block.
      */
     protected function addAnnotation(string $docBlock, string $spaces, string $annotation): string
     {
@@ -128,7 +128,7 @@ class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixer
             return $docBlock;
         }
 
-        // Add @final before the closing "*/".
+        // Add the annotation before the closing "*/".
         return preg_replace('/\s*\*\/\s*$/', "\n $spaces* @$annotation\n$spaces */", $docBlock);
     }
 
