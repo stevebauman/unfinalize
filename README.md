@@ -163,7 +163,7 @@ class Foo
 #### `--methods={protected/public}`
 
 If you would like to change the visibility of `private` methods to 
-`protected` or `public`, you may add the `--properties` option 
+`protected` or `public`, you may add the `--methods` option 
 to the unfinalize command with the new visibility to assign:
 
 ```json
