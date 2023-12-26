@@ -49,7 +49,7 @@ composer require stevebauman/unfinalize
 
 ## Usage
 
-You may unfinalize files using two different methods: [file paths](#file-paths), or [vendor paths](#vendor-paths).
+You may unfinalize files using two different methods: [file paths](#file-paths), or [package paths](#package-paths).
 
 ### File Paths
 
