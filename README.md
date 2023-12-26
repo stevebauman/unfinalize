@@ -49,7 +49,41 @@ composer require stevebauman/unfinalize
 
 ## Usage
 
-Inside your `composer.json` file, add the vendor packages you want to remove the final keywords from inside:
+You may unfinalize files using two different methods: [file paths](#file-paths), or [vendor paths](#vendor-paths).
+
+### File Paths
+
+Using files paths allow you to unfinalize specific files or directories by specifying them in the command:
+
+```bash
+php vendor/bin/unfinalize run vendor/package/src/File.php
+```
+
+You may unfinalize multiple files or directories by space separating them:
+
+```bash
+php vendor/bin/unfinalize run vendor/package/src/Foo/ vendor/package/src/Bar/File.php
+```
+
+To make sure this is always done on your project's dependencies, add the command to your `composer.json` file in the `scripts` property:
+
+```json
+{
+  "scripts": {
+    "post-update-cmd": [
+      "@php vendor/bin/unfinalize run vendor/package/src/Foo/ vendor/package/src/Bar/File.php"
+    ]
+  }
+}
+```
+
+Then run `composer update`.
+
+### Package Paths
+
+Using package paths allow you to unfinalize entire packages by specifying them in your `composer.json` file.
+
+Add the vendor packages you want to remove the final keywords from inside an `unfinalize` property:
 
 ```json
 {
