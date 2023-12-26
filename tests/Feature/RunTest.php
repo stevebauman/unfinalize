@@ -72,3 +72,38 @@ it('fixes vendor file', function (string $before, string $after) {
     ]
 ]);
 
+
+it('fixes specific files', function (string $before, string $after) {
+    File::makeDirectory($dir = stubsPath('vendor/foo/bar'), recursive: true, force: true);
+    File::put($foo = stubsPath('vendor/foo/bar/Foo.php'), $before);
+    File::put($bar = stubsPath('vendor/foo/bar/Bar.php'), $before);
+
+    $this->artisan('run', [
+        'paths' => [$foo, $bar],
+        '--dir' => stubsPath(),
+        '--annotate' => 'internal',
+        '--methods' => 'public',
+        '--properties' => 'protected',
+    ])->assertSuccessful();
+
+    expect(File::get($foo))->toEqual($after);
+    expect(File::get($bar))->toEqual($after);
+
+    File::delete($dir);
+})->with([
+    [
+        <<<PHP
+        <?php
+        final class Foo { private \$bar; private function baz() {} }
+        PHP,
+
+        <<<PHP
+        <?php
+        /**
+         * @internal
+         */
+        class Foo { protected \$bar; public function baz() {} }
+        PHP
+    ]
+]);
+
