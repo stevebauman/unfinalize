@@ -5,21 +5,11 @@ Unleash the freedom lost with open source PHP packages marking classes and metho
 </p>
 
 <p align="center">
-<a href="https://github.com/stevebauman/unfinalize/actions" target="_blank">
-<img src="https://img.shields.io/github/actions/workflow/status/stevebauman/unfinalize/run-tests.yml?branch=master&style=flat-square"/>
-</a>
-
-<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/v/stevebauman/unfinalize.svg?style=flat-square"/>
-</a>
-
-<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/dt/stevebauman/unfinalize.svg?style=flat-square"/>
-</a>
-
-<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank">
-<img src="https://img.shields.io/packagist/l/stevebauman/unfinalize.svg?style=flat-square"/>
-</a>
+<a href="https://github.com/stevebauman/unfinalize/actions" target="_blank"><img src="https://img.shields.io/github/actions/workflow/status/stevebauman/unfinalize/run-tests.yml?branch=master&style=flat-square"/></a>
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank"><img src="https://img.shields.io/packagist/v/stevebauman/unfinalize.svg?style=flat-square"/></a>
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank"><img src="https://img.shields.io/packagist/dt/stevebauman/unfinalize.svg?style=flat-square"/></a>
+<a href="https://packagist.org/packages/stevebauman/unfinalize" target="_blank"><img src="https://img.shields.io/packagist/l/stevebauman/unfinalize.svg?style=flat-square"/></a>
+</p>
 
 ---
 
