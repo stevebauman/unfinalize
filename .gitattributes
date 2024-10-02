@@ -4,7 +4,7 @@ config export-ignore
 bootstrap export-ignore
 phpunit.xml export-ignore
 box.json export-ignore
-unfinalize export-ignore
+./unfinalize export-ignore
 .github export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
