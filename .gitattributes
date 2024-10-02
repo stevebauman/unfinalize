@@ -1,6 +1,10 @@
-* text=auto eol=lf
-/.github export-ignore
-.scrutinizer.yml export-ignore
-BACKERS.md export-ignore
-CONTRIBUTING.md export-ignore
-CHANGELOG.md export-ignore
+app export-ignore
+tests export-ignore
+config export-ignore
+bootstrap export-ignore
+phpunit.xml export-ignore
+box.json export-ignore
+unfinalize export-ignore
+.github export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
