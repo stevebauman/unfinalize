@@ -49,7 +49,7 @@ Using files paths allow you to unfinalize specific files or directories by speci
 php vendor/bin/unfinalize run vendor/package/src/File.php
 ```
 
-You may unfinalize multiple files or directories by space separating them:
+You may unfinalize multiple files or directories by separating them by a space:
 
 ```bash
 php vendor/bin/unfinalize run vendor/package/src/Foo/ vendor/package/src/Bar/File.php
