@@ -1,5 +1,7 @@
 {
     "chmod": "0755",
+    "main": "unfinalize",
+    "output": "builds/unfinalize",
     "directories": [
         "app",
         "bootstrap",
@@ -15,5 +17,13 @@
     "compactors": [
         "KevinGH\\Box\\Compactor\\Php",
         "KevinGH\\Box\\Compactor\\Json"
+    ],
+    "git-version": "git-version",
+    "blacklist": [
+        "humbug/php-scoper",
+        "pestphp",
+        "mockery",
+        "phpunit",
+        "spatie/ray"
     ]
 }

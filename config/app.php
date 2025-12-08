@@ -26,7 +26,9 @@ return [
     |
     */
 
-    'version' => app('git.version'),
+    'version' => class_exists('Phar') && strlen(\Phar::running()) > 0
+        ? '@git-version@'
+        : app('git.version'),
 
     /*
     |--------------------------------------------------------------------------
