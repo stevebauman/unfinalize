@@ -1,0 +1,126 @@
+name: Build PHAR
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build PHAR on PHP 8.1
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Build PHAR
+        run: composer build
+
+      - name: Upload PHAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unfinalize-phar
+          path: builds/unfinalize
+          retention-days: 7
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Test PHAR on PHP ${{ matrix.php }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.5, 8.4, 8.3, 8.2, 8.1]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip
+          coverage: none
+
+      - name: Download PHAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: unfinalize-phar
+          path: builds
+
+      - name: Make PHAR executable
+        run: chmod +x builds/unfinalize
+
+      - name: Test PHAR version
+        run: php builds/unfinalize --version
+
+      - name: Create test file
+        run: |
+          mkdir -p /tmp/phar-test
+          cat > /tmp/phar-test/TestClass.php << 'EOF'
+          <?php
+          final class TestClass
+          {
+              private $property;
+              
+              final public function testMethod()
+              {
+                  return 'test';
+              }
+          }
+          EOF
+
+      - name: Run PHAR on test file
+        run: php builds/unfinalize run /tmp/phar-test/TestClass.php --annotate=internal --properties=protected --methods=public
+
+      - name: Verify test file was modified
+        run: |
+          cat /tmp/phar-test/TestClass.php
+          
+          # Check that final keywords were removed
+          if grep -q "final class" /tmp/phar-test/TestClass.php; then
+            echo "ERROR: 'final class' keyword still present"
+            exit 1
+          fi
+          
+          if grep -q "final public function" /tmp/phar-test/TestClass.php; then
+            echo "ERROR: 'final public function' keywords still present"
+            exit 1
+          fi
+          
+          # Check that @internal annotation was added
+          if ! grep -q "@internal" /tmp/phar-test/TestClass.php; then
+            echo "ERROR: '@internal' annotation not found"
+            exit 1
+          fi
+          
+          # Check that property visibility was changed
+          if ! grep -q "protected \$property" /tmp/phar-test/TestClass.php; then
+            echo "ERROR: Property not changed to protected"
+            exit 1
+          fi
+          
+          # Check that method visibility is public
+          if ! grep -q "public function testMethod" /tmp/phar-test/TestClass.php; then
+            echo "ERROR: Method not changed to public"
+            exit 1
+          fi
+          
+          echo "✅ All checks passed!"
+
