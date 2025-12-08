@@ -1,4 +1,4 @@
-name: Build PHAR
+name: build-phar
 
 on:
   workflow_dispatch:
