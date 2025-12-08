@@ -4,6 +4,7 @@ namespace App;
 
 use PhpCsFixer\AbstractFixer;
 use PhpCsFixer\Fixer\ConfigurableFixerInterface;
+use PhpCsFixer\Fixer\ConfigurableFixerTrait;
 use PhpCsFixer\FixerConfiguration\FixerConfigurationResolver;
 use PhpCsFixer\FixerConfiguration\FixerConfigurationResolverInterface;
 use PhpCsFixer\FixerConfiguration\FixerOptionBuilder;
@@ -15,6 +16,8 @@ use SplFileInfo;
 
 class RemoveFinalKeywordFixer extends AbstractFixer implements ConfigurableFixerInterface
 {
+    use ConfigurableFixerTrait;
+
     /**
      * Get the name of the fixer.
      */

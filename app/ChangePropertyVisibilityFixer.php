@@ -3,6 +3,7 @@
 namespace App;
 
 use PhpCsFixer\Fixer\ConfigurableFixerInterface;
+use PhpCsFixer\Fixer\ConfigurableFixerTrait;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\Tokenizer\Tokens;
@@ -12,6 +13,7 @@ use SplFileInfo;
 
 class ChangePropertyVisibilityFixer extends AbstractFixer implements ConfigurableFixerInterface
 {
+    use ConfigurableFixerTrait;
     use ResolvesVisibilityProperties;
 
     /**
