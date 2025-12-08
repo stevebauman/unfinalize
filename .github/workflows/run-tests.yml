@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer install
+          composer install --ignore-platform-req=php+
 
       - name: Execute tests
         run: vendor/bin/pest
