@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -123,4 +123,28 @@ jobs:
           fi
           
           echo "✅ All checks passed!"
+
+  commit:
+    needs: test
+    runs-on: ubuntu-latest
+    name: Commit PHAR to repository
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download PHAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: unfinalize-phar
+          path: builds
+
+      - name: Make PHAR executable
+        run: chmod +x builds/unfinalize
+
+      - name: Commit and push PHAR
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Build PHAR on PHP 8.1 (tested on 8.1-8.5)"
+          file_pattern: "builds/unfinalize"
 
