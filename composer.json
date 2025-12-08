@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.16",
-        "humbug/box": "^4.6",
+        "humbug/box": "^3.0|^4.0",
         "laravel-zero/framework": "^10.0.2",
         "laravel/pint": "^1.8",
         "mockery/mockery": "^1.5.1",
